@@ -47,22 +47,22 @@ pip install icalendar pytz
 
 ### 1. Paste your message
 
-Paste the **full WhatsApp message** containing prayer times into `msg.txt`.  
+Paste the **full WhatsApp message** containing prayer times into `msg.txt`.
 Example:
 
 ```
 السلام عليكم ورحمة الله وبركاته
 
-*Fajr Salah* 
+*Fajr Salah*
 Time: 05:30 ⚠️
 
-*Jumuaa Salah @ Vaihingen* 
+*Jumuaa Salah @ Vaihingen*
 Time: 13:30 & 14:00
 
-*Asr Salah* 
-Time: 17:45 
+*Asr Salah*
+Time: 17:45
 
-*Maghrib Salah* 
+*Maghrib Salah*
 Time: 21:05 ⚠️
 
 *Ishaa Salah*
@@ -79,7 +79,12 @@ Location: ÖZ
 ### 2. Run the script
 
 ```bash
-python prayer_to_calendar.py
+python main.py
+```
+or run as an executable:
+```bash
+chmod +x main.py
+./main.py
 ```
 
 This will create a file named `prayer_times.ics`.
@@ -105,12 +110,6 @@ This will create a file named `prayer_times.ics`.
 - Export multiple days or a full month
 - Google Calendar API integration for automatic syncing
 - GUI or web version (e.g., with Streamlit)
-
----
-
-## 📜 License
-
-MIT License
 
 ---
 
