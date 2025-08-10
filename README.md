@@ -1,12 +1,13 @@
 
 # 🕌 Prayer Times Extractor & Google Calendar Importer
 
-This tool extracts daily prayer times from a pasted WhatsApp message (via `msg.txt`) and generates a `.ics` calendar file that can be imported into Google Calendar, or synced directly via the Google Calendar API.
+This tool extracts daily prayer times from a pasted WhatsApp message (read from **clipboard** or `msg.txt`) and generates a `.ics` calendar file that can be imported into Google Calendar, or synced directly via the Google Calendar API.
 
 ---
 
 ## 📦 Features
 
+- Reads message directly from clipboard (no paste required) or from msg.txt
 - Parse flexible WhatsApp prayer time formats
 - Handle missing or canceled prayers (`❌`)
 - Support for multiple Jumu'ah times (`&`)
@@ -19,7 +20,7 @@ This tool extracts daily prayer times from a pasted WhatsApp message (via `msg.t
 
 ```
 prayer_times_extractor/
-├── main.py                    # Generate .ics file from WhatsApp message
+├── main.py                    # Generate .ics file from WhatsApp message (clipboard or file)
 ├── prayer_google_sync.py # Optional: sync directly to Google Calendar
 ├── msg.txt                   # Paste WhatsApp message here
 ├── prayer_times.ics          # Output calendar file
@@ -41,16 +42,21 @@ cd prayer_times_extractor
 ### 2. Install dependencies
 
 ```bash
-pip install icalendar pytz google-api-python-client google-auth google-auth-oauthlib
+pip install icalendar pytz pyperclip google-api-python-client google-auth google-auth-oauthlib
+
+# In case you got a message similar to this when running main.py: (Skipping clipboard: clipboard error: Pyperclip could not find a copy/paste mechanism for your system. For more information, please visit https://pyperclip.readthedocs.io/en/latest/index.html#not-implemented-error. On Linux, you can run sudo apt-get install xclip or sudo apt-get install xselect to install a copy/paste mechanism.)
+sudo apt install -y xclip
+
 ```
 
 ---
 
 ## 📝 Usage
 
-### 1. Paste your message
+### 1. Prepare your message
 
-Paste the **full WhatsApp message** containing prayer times into `msg.txt`.
+Option A (Recommended): Copy the WhatsApp prayer times message to your clipboard — the script will read it automatically.
+Option B: Paste the message into `msg.txt`
 
 Example:
 
@@ -67,7 +73,7 @@ Time: 13:30 & 14:00
 Time: 17:45
 
 *Maghrib Salah*
-Time: 21:05 ⚠️
+Time: ❌❌
 
 *Ishaa Salah*
 Time: 23:10 ⚠️
@@ -131,6 +137,7 @@ Prayer times will be added directly to your Google Calendar.
 - [ ] Export multiple days or a full month
 - [ ] GUI or web version (e.g., with Streamlit)
 <!-- - [ ] Auto-detect date from WhatsApp header -->
+<!-- - [ ] Read Automatically from Whatsapp? Not possible -->
 ---
 
 ## 🙏 Contributing
