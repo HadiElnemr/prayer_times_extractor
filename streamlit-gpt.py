@@ -70,11 +70,14 @@ if uploaded_file and not message_text.strip():
     message_text = uploaded_file.read().decode("utf-8")
 
 # Date selector
-date_for_event = st.write(f"#### 🗓️ Date:  {datetime.today().strftime('%Y-%m-%d')}")
+date_for_event = datetime.today().strftime('%Y-%m-%d')
+st.write(f"#### 🗓️ Date:    {date_for_event}")
 
 # Location and timezone
-date_for_event = st.write(f"#### 📍 Event Location: ÖZ")
-date_for_event = st.write(f"#### 🌎 Timezone: Europe/Berlin")
+location = "ÖZ"
+st.write(f"#### 📍 Event Location:  {location}")
+tz = "Europe/Berlin"
+st.write(f"#### 🌎 Timezone:    {tz}")
 
 
 if st.button("Generate Calendar"):
