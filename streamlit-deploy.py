@@ -1,7 +1,7 @@
 # this file will contain a copy of one of the other files, 
 # but the file name has to stay the same to maintain the deployment on streamlit
 # so we'll add more files to try different things, and copy the code we want to deploy to this file
-
+###################################################################################################
 
 import streamlit as st
 import re
@@ -62,7 +62,7 @@ def save_calendar(cal, filename):
 
 # ------------------ Streamlit UI ------------------ #
 
-st.title("📅 Prayer Times to Calendar")
+st.title("🕌 Prayer Times to Calendar")
 
 st.write("Paste your WhatsApp prayer times message below or upload a `.txt` file:")
 
@@ -75,11 +75,12 @@ if uploaded_file and not message_text.strip():
     message_text = uploaded_file.read().decode("utf-8")
 
 # Date selector
-date_for_event = st.date_input("Date for events", datetime.today()).strftime("%Y-%m-%d")
+date_for_event = st.write(f"#### 🗓️ Date:  {datetime.today().strftime('%Y-%m-%d')}")
 
 # Location and timezone
-location = st.text_input("Event location", "ÖZ")
-tz = st.text_input("Timezone", "Europe/Berlin")
+date_for_event = st.write(f"#### 📍 Event Location: ÖZ")
+date_for_event = st.write(f"#### 🌎 Timezone: Europe/Berlin")
+
 
 if st.button("Generate Calendar"):
     if not message_text.strip():
