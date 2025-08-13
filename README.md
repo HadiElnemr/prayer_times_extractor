@@ -53,6 +53,26 @@ sudo apt install -y xclip
 
 ## 📝 Usage
 
+### 0. Alternative quick way:
+
+Add a function in your `.bashrc` or `.zshrc` file to run the script directly from the terminal:
+
+```bash
+function prayer_sync(){
+  cd ~/dev/prayer_times_extractor
+  ./main.py
+  ./prayer_google_sync.py
+}
+```
+
+Copy the message from WhatsApp (now it is in clipboard) and run:
+
+```bash
+prayer_sync
+```
+
+Just like that, you will have the prayer times in your Google Calendar after signing in.
+
 ### 1. Prepare your message
 
 Option A (Recommended): Copy the WhatsApp prayer times message to your clipboard — the script will read it automatically.
