@@ -69,12 +69,11 @@ def save_calendar(cal, filename):
 
 st.title("🕌 Prayer Times to Calendar")
 
-# st.write("""
-# Paste your WhatsApp prayer times message below, upload a `.txt` file,  
-# or use your clipboard if available (requires `pyperclip`).
-# """)
+# Session state setup
+if "message_text" not in st.session_state:
+    st.session_state["message_text"] = ""
 
-# Auto-detect clipboard content
+# --- Clipboard Support ---
 clipboard_content = ""
 max_lines_clipboard_preview = 3
 if pyperclip is not None:
@@ -93,17 +92,18 @@ if pyperclip is not None:
 else:
     st.caption("📋 Clipboard support not available — install `pyperclip` to enable.")
 
-# Main text area (pre-filled if clipboard button clicked)
-message_text = st.text_area(
+# --- File upload ---
+uploaded_file = st.file_uploader("...or upload a message text file", type=["txt"])
+if uploaded_file:
+    file_content = uploaded_file.read().decode("utf-8")
+    st.session_state["message_text"] = file_content
+
+# --- Text area (always reflects current state) ---
+st.text_area(
     "Prayer times message",
     height=200,
-    value=st.session_state.get("message_text", "")
+    key="message_text"  # This directly reads/writes session state
 )
-
-# File upload option
-uploaded_file = st.file_uploader("...or upload a message text file", type=["txt"])
-if uploaded_file and not message_text.strip():
-    message_text = uploaded_file.read().decode("utf-8")
 
 # Date selector
 date_for_event = datetime.today().strftime('%Y-%m-%d')
@@ -117,10 +117,10 @@ st.write(f"#### 🌎 Timezone:    {tz}")
 
 # Generate calendar button
 if st.button("Generate Calendar"):
-    if not message_text.strip():
+    if not st.session_state["message_text"].strip():
         st.error("❌ No message provided. Please paste, upload, or load from clipboard.")
     else:
-        prayers = parse_prayer_times(message_text)
+        prayers = parse_prayer_times(st.session_state["message_text"])
         if not prayers:
             st.warning("⚠️ No valid prayer times found in the message.")
         else:
