@@ -3,3 +3,4 @@ dateparser
 datetime
 pathlib
 pytz
+pyperclip

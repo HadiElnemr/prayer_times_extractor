@@ -5,6 +5,13 @@ from pathlib import Path
 from icalendar import Calendar, Event
 from pytz import timezone
 
+# Optional clipboard support
+try:
+    import pyperclip
+except ImportError:
+    pyperclip = None
+
+
 # ------------------ Logic Functions ------------------ #
 
 def parse_prayer_times(text):
@@ -32,6 +39,7 @@ def parse_prayer_times(text):
 
     return prayers
 
+
 def generate_calendar(prayers, date_str, location="ÖZ", tz="Europe/Berlin"):
     cal = Calendar()
     tzinfo = timezone(tz)
@@ -51,20 +59,48 @@ def generate_calendar(prayers, date_str, location="ÖZ", tz="Europe/Berlin"):
 
     return cal
 
+
 def save_calendar(cal, filename):
     with open(filename, 'wb') as f:
         f.write(cal.to_ical())
+
 
 # ------------------ Streamlit UI ------------------ #
 
 st.title("🕌 Prayer Times to Calendar")
 
-st.write("Paste your WhatsApp prayer times message below or upload a `.txt` file:")
+# st.write("""
+# Paste your WhatsApp prayer times message below, upload a `.txt` file,  
+# or use your clipboard if available (requires `pyperclip`).
+# """)
 
-# Option 1: Paste text
-message_text = st.text_area("Prayer times message", height=200)
+# Auto-detect clipboard content
+clipboard_content = ""
+max_lines_clipboard_preview = 3
+if pyperclip is not None:
+    try:
+        clipboard_content = pyperclip.paste().strip()
+        if clipboard_content:
+            with st.container(horizontal=True):
+                if st.button("📋 Use Clipboard Content"):
+                    st.session_state["message_text"] = clipboard_content
+                formatted_clipboard_content = "\n".join(clipboard_content.splitlines()[:max_lines_clipboard_preview]) + ("\n..." if len(clipboard_content.splitlines()) > max_lines_clipboard_preview else "")
+                st.markdown(f"""> {formatted_clipboard_content}""", width=450)
+        else:
+            st.caption("📋 Clipboard is empty.")
+    except Exception as e:
+        st.caption(f"⚠️ Could not read clipboard: {e}")
+else:
+    st.caption("📋 Clipboard support not available — install `pyperclip` to enable.")
 
-# Option 2: Upload file
+# Main text area (pre-filled if clipboard button clicked)
+message_text = st.text_area(
+    "Prayer times message",
+    height=200,
+    value=st.session_state.get("message_text", "")
+)
+
+# File upload option
 uploaded_file = st.file_uploader("...or upload a message text file", type=["txt"])
 if uploaded_file and not message_text.strip():
     message_text = uploaded_file.read().decode("utf-8")
@@ -79,10 +115,10 @@ st.write(f"#### 📍 Event Location:  {location}")
 tz = "Europe/Berlin"
 st.write(f"#### 🌎 Timezone:    {tz}")
 
-
+# Generate calendar button
 if st.button("Generate Calendar"):
     if not message_text.strip():
-        st.error("❌ No message provided. Please paste or upload the prayer times.")
+        st.error("❌ No message provided. Please paste, upload, or load from clipboard.")
     else:
         prayers = parse_prayer_times(message_text)
         if not prayers:
