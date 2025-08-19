@@ -48,11 +48,16 @@ def create_event(service, summary, start_dt, end_dt, location):
         },
         'reminders': {'useDefault': True},
     }
-    created = service.events().insert(calendarId='primary', body=event).execute()
+    # 👇 NEW: choose target calendar ## For multiple possible calendars: (env var or default to 'primary')
+    # calendar_id = os.getenv('CALENDAR_ID', 'primary')
+    calendar_id = '41929802da9a7eb1dc226bd6356f6afd325aa0c67d2e9951c32a5f0829359564@group.calendar.google.com'
+
+    created = service.events().insert(calendarId=calendar_id, body=event).execute()
     print(f"✅ Created: {created['summary']} on {created['start']['dateTime']}")
 
 if __name__ == "__main__":
     service = authenticate_google()
+
     events = parse_ics_events("prayer_times.ics")
     for summary, start, end, location in events:
         create_event(service, summary, start, end, location)
