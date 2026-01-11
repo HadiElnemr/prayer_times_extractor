@@ -72,6 +72,10 @@ st.title("🕌 Prayer Times to Calendar")
 # Session state setup
 if "message_text" not in st.session_state:
     st.session_state["message_text"] = ""
+if "date_option" not in st.session_state:
+    st.session_state["date_option"] = "Today"
+if "custom_date" not in st.session_state:
+    st.session_state["custom_date"] = datetime.today().date()
 
 # --- Clipboard Support ---
 clipboard_content = ""
@@ -106,8 +110,30 @@ st.text_area(
 )
 
 # Date selector
-date_for_event = datetime.today().strftime('%Y-%m-%d')
-st.write(f"#### 🗓️ Date:    {date_for_event}")
+st.write("#### 🗓️ Date Selection")
+date_option = st.radio(
+    "Choose date:",
+    ["Today", "Tomorrow", "Custom"],
+    horizontal=True,
+    key="date_option"
+)
+
+# Calculate date based on selection
+if date_option == "Today":
+    selected_date = datetime.today().date()
+elif date_option == "Tomorrow":
+    selected_date = (datetime.today() + timedelta(days=1)).date()
+else:  # Custom
+    selected_date = st.date_input(
+        "Select a custom date:",
+        value=st.session_state["custom_date"],
+        min_value=None,  # Allow past dates
+        max_value=None,  # Allow future dates
+        key="custom_date"
+    )
+
+date_for_event = selected_date.strftime('%Y-%m-%d')
+st.write(f"**Selected Date:** ({selected_date.strftime('%A, %B %d, %Y')})")
 
 # Location and timezone
 location = "ÖZ"
