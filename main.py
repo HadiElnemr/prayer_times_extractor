@@ -22,19 +22,37 @@ def parse_prayer_times(text):
     for line in lines:
         line = line.strip()
 
-        # Match prayer name lines like "*Fajr Salah*"
-        match_prayer = re.match(r"\*?([\w\s@]+Salah)[^\n]*\*?", line, re.IGNORECASE)
+        # Match prayer name lines like "*Fajr Salah*" or with emojis
+        # This regex handles emojis anywhere in the prayer name (before, after, or within)
+        # Pattern: optional *, then any chars (including emojis), then word chars/spaces/@, then "Salah", then any chars (including emojis), optional *
+        match_prayer = re.match(r"\*?([^\n]*?[\w\s@]+Salah[^\n]*?)\*?", line, re.IGNORECASE | re.UNICODE)
         if match_prayer:
-            current_prayer = match_prayer.group(1).strip()
+            # Extract prayer name and clean it (remove asterisks, keep emojis if present)
+            prayer_name = match_prayer.group(1).strip()
+            # Remove asterisks but keep everything else including emojis
+            prayer_name = re.sub(r'^\*+|\*+$', '', prayer_name).strip()
+            current_prayer = prayer_name
             continue
 
         # Match time line, allow multiple times (e.g., "13:30 & 14:00")
-        match_time = re.search(r"Time[:：]?\s*([\d: &]+)", line)
-        if match_time and current_prayer:
+        # This regex handles emojis before or after the time (like 🕧, ⚠️, etc.)
+        # First check if line contains "Time:" pattern
+        if re.search(r"Time[:：]", line, re.IGNORECASE) and current_prayer:
+            # Filter out lines with ❌ (canceled prayers)
             if '❌' not in line:
-                time_str = match_time.group(1)
-                time_entries = [t.strip() for t in time_str.split("&") if t.strip()]
-                prayers.setdefault(current_prayer, []).extend(time_entries)
+                # Extract all time patterns (HH:MM) from the line, regardless of emojis
+                # This handles cases like "Time: 🕧 12:30" or "Time: 12:30 ⚠️" or "Time: 13:30 & 14:00"
+                time_matches = re.findall(r'\b(\d{1,2}:\d{2})\b', line)
+                if time_matches:
+                    # Remove duplicates while preserving order
+                    seen = set()
+                    unique_times = []
+                    for t in time_matches:
+                        if t not in seen:
+                            seen.add(t)
+                            unique_times.append(t)
+                    if unique_times:
+                        prayers.setdefault(current_prayer, []).extend(unique_times)
             current_prayer = None
 
     return prayers
