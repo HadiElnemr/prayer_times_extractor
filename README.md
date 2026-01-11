@@ -21,11 +21,12 @@ This tool extracts daily prayer times from a pasted WhatsApp message (read from 
 ```
 prayer_times_extractor/
 ├── main.py                    # Generate .ics file from WhatsApp message (clipboard or file)
-├── prayer_google_sync.py # Optional: sync directly to Google Calendar
-├── msg.txt                   # Paste WhatsApp message here
-├── prayer_times.ics          # Output calendar file
-├── credentials.json          # Google OAuth credentials
-└── token.json                # Generated after first OAuth login
+├── prayer_google_sync.py      # Optional: sync directly to Google Calendar
+├── msg.txt                    # Paste WhatsApp message here
+├── prayer_times.ics           # Output calendar file
+├── credentials.json           # Google OAuth credentials
+├── token.json                 # Generated after first OAuth login
+└── requirements.txt           # Python dependencies
 ```
 
 ---
@@ -42,6 +43,9 @@ cd prayer_times_extractor
 ### 2. Install dependencies
 
 ```bash
+pip install -r requirements.txt
+
+# Or install individually:
 pip install icalendar pytz pyperclip google-api-python-client google-auth google-auth-oauthlib
 
 # In case you got a message similar to this when running main.py: (Skipping clipboard: clipboard error: Pyperclip could not find a copy/paste mechanism for your system. For more information, please visit https://pyperclip.readthedocs.io/en/latest/index.html#not-implemented-error. On Linux, you can run sudo apt-get install xclip or sudo apt-get install xselect to install a copy/paste mechanism.)
@@ -143,7 +147,7 @@ This will create a file named `prayer_times.ics`.
 5. Run:
 
 ```bash
-python sync_to_google_calendar.py
+python prayer_google_sync.py
 ```
 
 ✅ The script will open a browser, ask you to log in and authorize access.
@@ -151,10 +155,8 @@ Prayer times will be added directly to your Google Calendar.
 
 ---
 
-
 ## 🛠 Future Improvements
 - [x] Google Calendar API integration for automatic syncing
-- [ ] Export multiple days or a full month
 - [ ] GUI or web version (e.g., with Streamlit)
 <!-- - [ ] Auto-detect date from WhatsApp header -->
 <!-- - [ ] Read Automatically from Whatsapp? Not possible -->

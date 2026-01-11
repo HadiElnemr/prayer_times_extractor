@@ -3,3 +3,5 @@ token.json
 msg.txt
 prayer_times.ics
 .env
+pyperclip
+__pycache__

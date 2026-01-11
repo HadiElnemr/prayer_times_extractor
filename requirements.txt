@@ -1,0 +1,7 @@
+icalendar>=5.0.0
+pytz>=2023.3
+pyperclip>=1.8.2
+google-api-python-client>=2.100.0
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+
